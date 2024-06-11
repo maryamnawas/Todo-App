@@ -11,6 +11,21 @@ const TodoService = {
     return todosStr ? JSON.parse(todosStr) : [];
   },
 
+  addTodo: (text: string): TodoTypes => {
+    const todos = TodoService.getTodos();
+    const newTodo: TodoTypes = { id: todos.length + 1, text, completed: false };
+    const updatedTodos = [...todos, newTodo];
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
+    return newTodo;
+  },
+
+  updateTodo: (todo: TodoTypes): TodoTypes => {
+    const todos = TodoService.getTodos();
+    const updatedTodos = todos.map((t) => (t.id === todo.id ? todo : t));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
+    return todo;
+  },
+
 };
 
 export default TodoService;
