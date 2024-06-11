@@ -2,17 +2,16 @@
 
 import TodoTypes from "./todo";
 
-
 const LOCAL_STORAGE_KEY = 'todos';
 
-// Getting the todos from the array
+//  Getting the todos from the array
 const TodoService = {
   getTodos: (): TodoTypes[] => {
     const todosStr = localStorage.getItem(LOCAL_STORAGE_KEY);
     return todosStr ? JSON.parse(todosStr) : [];
   },
 
-//   Adding the todos
+//  Adding the todos
   addTodo: (text: string): TodoTypes => {
     const todos = TodoService.getTodos();
     const newTodo: TodoTypes = { id: todos.length + 1, text, completed: false };
@@ -21,7 +20,7 @@ const TodoService = {
     return newTodo;
   },
 
-//   Updating the todos
+//  Updating the todos
   updateTodo: (todo: TodoTypes): TodoTypes => {
     const todos = TodoService.getTodos();
     const updatedTodos = todos.map((t) => (t.id === todo.id ? todo : t));
@@ -29,7 +28,7 @@ const TodoService = {
     return todo;
   },
 
-//   deleting the todos
+//  Deleting the todos
   deleteTodo: (id: number): void => {
     const todos = TodoService.getTodos();
     const updatedTodos = todos.filter((todo) => todo.id !== id);
