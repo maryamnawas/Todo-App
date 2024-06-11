@@ -26,6 +26,11 @@ const TodoService = {
     return todo;
   },
 
+  deleteTodo: (id: number): void => {
+    const todos = TodoService.getTodos();
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
+  },
 };
 
 export default TodoService;
