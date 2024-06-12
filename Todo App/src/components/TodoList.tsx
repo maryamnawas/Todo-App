@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import TodoService from "../TodoService";
 import TodoTypes from "../todo";
 // import TodoForm from "./TodoForm";
-import "../CSS/TodoList.css";
+// import "../CSS/TodoList.css";
 import { FaEdit, FaCheck } from "react-icons/fa";
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { GiCancel } from "react-icons/gi";
