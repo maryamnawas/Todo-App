@@ -31,7 +31,7 @@ namespace TodoApi.Controllers
 
             if (todo == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Todo with id {id} not found." });
             }
 
             return todo;
@@ -41,6 +41,11 @@ namespace TodoApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Todo>> PostTodo(Todo todo)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Todos.Add(todo);
             await _context.SaveChangesAsync();
 
@@ -53,7 +58,12 @@ namespace TodoApi.Controllers
         {
             if (id != todo.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Id in the URL does not match the Id in the request body." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
             _context.Entry(todo).State = EntityState.Modified;
@@ -66,7 +76,7 @@ namespace TodoApi.Controllers
             {
                 if (!TodoExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new { message = $"Todo with id {id} not found." });
                 }
                 else
                 {
@@ -84,7 +94,7 @@ namespace TodoApi.Controllers
             var todo = await _context.Todos.FindAsync(id);
             if (todo == null)
             {
-                return NotFound();
+                return NotFound(new { message = $"Todo with id {id} not found." });
             }
 
             _context.Todos.Remove(todo);
