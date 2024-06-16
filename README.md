@@ -32,10 +32,10 @@ Clone the Repository:
 1. git clone https://github.com/maryamnawas/Todo-App.git -> cd Todo-App
 
 Backend Setup:
-2. Navigate to the Backend Directory: cd Backend
-3. Install Dependencies: dotnet restore
-4. Update Database: Ensure the SQLite database is correctly set up - dotnet ef database update
-5. Run the Backend Server: dotnet run
+1. Navigate to the Backend Directory: cd Backend
+2. Install Dependencies: dotnet restore
+3. Update Database: Ensure the SQLite database is correctly set up - dotnet ef database update
+4. Run the Backend Server: dotnet run
    
 Frontend Setup:
 1. Navigate to the Frontend Directory: cd Todo App
