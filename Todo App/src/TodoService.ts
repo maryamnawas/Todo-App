@@ -1,38 +1,47 @@
-// TodoService.ts
+import axios from 'axios';
+import TodoTypes from './todo';
 
-import TodoTypes from "./todo";
+const API_URL = 'http://localhost:5001/api/todos';
 
-const LOCAL_STORAGE_KEY = 'todos';
-
-//  Getting the todos from the array
 const TodoService = {
-  getTodos: (): TodoTypes[] => {
-    const todosStr = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return todosStr ? JSON.parse(todosStr) : [];
+  getTodos: async (): Promise<TodoTypes[]> => {
+    try {
+      const response = await axios.get(API_URL);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching todos:", error);
+      throw error;
+    }
   },
 
-//  Adding the todos
-  addTodo: (text: string): TodoTypes => {
-    const todos = TodoService.getTodos();
-    const newTodo: TodoTypes = { id: todos.length + 1, text, completed: false };
-    const updatedTodos = [...todos, newTodo];
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
-    return newTodo;
+  addTodo: async (text: string): Promise<TodoTypes> => {
+    try {
+      const newTodo = { id: 0, text, completed: false };
+      const response = await axios.post(API_URL, newTodo);
+      return response.data;
+    } catch (error) {
+      console.error("Error adding todo:", error);
+      throw error;
+    }
   },
 
-//  Updating the todos
-  updateTodo: (todo: TodoTypes): TodoTypes => {
-    const todos = TodoService.getTodos();
-    const updatedTodos = todos.map((t) => (t.id === todo.id ? todo : t));
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
-    return todo;
+  updateTodo: async (todo: TodoTypes): Promise<TodoTypes> => {
+    try {
+      const response = await axios.put(`${API_URL}/${todo.id}`, todo);
+      return response.data;
+    } catch (error) {
+      console.error("Error updating todo:", error);
+      throw error;
+    }
   },
 
-//  Deleting the todos
-  deleteTodo: (id: number): void => {
-    const todos = TodoService.getTodos();
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedTodos));
+  deleteTodo: async (id: number): Promise<void> => {
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+      throw error;
+    }
   },
 };
 

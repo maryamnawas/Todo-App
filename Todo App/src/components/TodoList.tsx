@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TodoService from "../TodoService";
 import TodoTypes from "../todo";
 import TodoForm from "./TodoForm";
@@ -8,10 +8,22 @@ import { RiDeleteBin5Fill } from "react-icons/ri";
 import { GiCancel } from "react-icons/gi";
 
 const TodoList: React.FC = () => {
-  const [todos, setTodos] = useState<TodoTypes[]>(TodoService.getTodos());
-
+  const [todos, setTodos] = useState<TodoTypes[]>([]);
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
   const [editedTodoText, setEditedTodoText] = useState<string>("");
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const fetchedTodos = await TodoService.getTodos();
+        setTodos(fetchedTodos);
+      } catch (error) {
+        console.error("Error fetching todos:", error);
+        alert("Failed to fetch todos. Please check your network connection.");
+      }
+    };
+    fetchTodos();
+  }, []);
 
   const handleEditStart = (id: number, text: string) => {
     setEditingTodoId(id);
@@ -23,31 +35,41 @@ const TodoList: React.FC = () => {
     setEditedTodoText("");
   };
 
-  const handleEditSave = (id: number) => {
+  const handleEditSave = async (id: number) => {
     if (editedTodoText.trim() !== "") {
-      const updatedTodo = TodoService.updateTodo({
-        id,
-        text: editedTodoText,
-        completed: false,
-      });
-      setTodos((prevTodos) =>
-        prevTodos.map((todo) => (todo.id === id ? updatedTodo : todo))
-      );
-      setEditingTodoId(null);
-      setEditedTodoText("");
+      try {
+        const updatedTodo = await TodoService.updateTodo({
+          id,
+          text: editedTodoText,
+          completed: false,
+        });
+        setTodos((prevTodos) =>
+          prevTodos.map((todo) => (todo.id === id ? updatedTodo : todo))
+        );
+        setEditingTodoId(null);
+        setEditedTodoText("");
+      } catch (error) {
+        console.error("Error updating todo:", error);
+        alert("Failed to update todo. Please try again.");
+      }
+    } else {
+      alert("Todo text cannot be empty.");
     }
   };
 
-  const handleDeleteTodo = (id: number) => {
-    TodoService.deleteTodo(id);
-    setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+  const handleDeleteTodo = async (id: number) => {
+    try {
+      await TodoService.deleteTodo(id);
+      setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+      alert("Failed to delete todo. Please try again.");
+    }
   };
 
   return (
     <div className="todoContainer">
-      <div>
-        <TodoForm setTodos={setTodos} />
-      </div>
+      <TodoForm setTodos={setTodos} />
       <div className="todos">
         {todos.map((todo) => (
           <div className="items" key={todo.id}>
